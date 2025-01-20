@@ -1,4 +1,5 @@
 import 'package:ai_lawyer/src/core/core.dart';
+import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -25,7 +26,7 @@ class OnBordingView extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const NextView(),
+          builder: (context) => const Welcome(),
         ),
       );
     }
@@ -163,22 +164,6 @@ class OnBordingView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class NextView extends StatelessWidget {
-  const NextView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          'Welcome to the Next View!',
-          style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
-        ),
       ),
     );
   }
