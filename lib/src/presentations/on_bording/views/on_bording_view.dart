@@ -27,7 +27,7 @@ class OnBordingView extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginView(),
+          builder: (context) => const Welcome(),
         ),
       );
     }
