@@ -1,4 +1,5 @@
 import 'package:ai_lawyer/src/core/core.dart';
+import 'package:ai_lawyer/src/presentations/auth/auth.dart';
 import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -26,7 +27,7 @@ class OnBordingView extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const Welcome(),
+          builder: (context) => const LoginView(),
         ),
       );
     }
