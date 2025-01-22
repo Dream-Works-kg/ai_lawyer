@@ -1,4 +1,6 @@
 import 'package:ai_lawyer/src/core/core.dart';
+import 'package:ai_lawyer/src/presentations/auth/auth.dart';
+import 'package:ai_lawyer/src/presentations/auth/view/forgot_pasword/views/forgot_pasword_view.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -52,7 +54,14 @@ class LoginView extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ForgotPaswordView(),
+                        ),
+                      );
+                    },
                     child: Text(
                       'Забыли пароль?',
                       style: TextStyle(
@@ -91,7 +100,14 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SingUpView(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'Регистрация',
                         style: TextStyle(

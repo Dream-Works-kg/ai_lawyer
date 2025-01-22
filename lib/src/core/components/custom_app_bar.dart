@@ -9,6 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TextStyle? textStyle;
   final Function()? onTapTrailing;
   final Color? backgroundColor;
+  final Color? lidingButtomColor;
 
   const CustomAppBar({
     super.key,
@@ -18,6 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.textStyle,
     this.onTapTrailing,
     this.backgroundColor,
+    this.lidingButtomColor,
   });
 
   @override
@@ -32,7 +34,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: ArrowBackButtom(),
+                child: ArrowBackButtom(
+                  buttomColor: lidingButtomColor,
+                ),
               ),
             )
           : SizedBox(width: 11.5.w),
