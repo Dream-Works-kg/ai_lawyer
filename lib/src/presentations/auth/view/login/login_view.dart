@@ -75,12 +75,12 @@ class LoginView extends StatelessWidget {
                 SizedBox(height: 2.h),
                 CustomButtom(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => HomeView(),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CustomBottomNavBar(),
+                      ),
+                    );
                   },
                   title: 'Войти',
                 ),

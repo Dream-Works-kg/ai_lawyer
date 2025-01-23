@@ -45,7 +45,16 @@ class ResetPasswordView extends StatelessWidget {
             SizedBox(
               height: 6.h,
             ),
-            CustomButtom(title: 'Сохранить', onTap: () {})
+            CustomButtom(
+                title: 'Сохранить',
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustomBottomNavBar(),
+                    ),
+                  );
+                })
           ],
         ),
       ),

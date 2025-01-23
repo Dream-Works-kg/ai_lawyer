@@ -58,21 +58,6 @@ class SingUpView extends StatelessWidget {
                     obscureText: false,
                     suffixIcon: Icons.visibility_off_outlined,
                   ),
-                  SizedBox(height: 3.h),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        'Забыли пароль?',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 2.h),
                   CustomButtom(
                     onTap: () {

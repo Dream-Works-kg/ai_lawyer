@@ -1,6 +1,5 @@
 import 'package:ai_lawyer/src/core/components/components.dart';
 import 'package:ai_lawyer/src/presentations/auth/auth.dart';
-import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:pinput/pinput.dart'; // Add this package for PIN input functionality
@@ -119,7 +118,7 @@ class PhoneVirifyView extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Welcome(),
+                              builder: (context) => CustomBottomNavBar(),
                             ));
                       } else {
                         Navigator.push(
