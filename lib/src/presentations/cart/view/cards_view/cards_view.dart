@@ -1,12 +1,12 @@
-import 'package:ai_lawyer/src/presentations/cart/view/add_card/new_card.dart';
-import 'package:ai_lawyer/src/presentations/cart/view/home_cart/view/paymont_hone.dart';
-import 'package:ai_lawyer/src/presentations/cart/view/home_cart/view/transaction_history.dart';
+import 'package:ai_lawyer/src/presentations/cart/view/add_card/add_card.dart';
+import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/all_cards.dart';
+import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/transaction_history.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class HomeCart extends StatelessWidget {
-  const HomeCart({super.key});
+class CardsView extends StatelessWidget {
+  const CardsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,7 @@ class HomeCart extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => NewCard(),
+                            builder: (context) => AddCard(),
                           ),
                         );
                       },
@@ -105,7 +105,7 @@ class HomeCart extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 5.5.w),
-                    PaymontHone(),
+                    AllCards(),
                   ],
                 ),
               ),
