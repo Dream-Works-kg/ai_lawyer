@@ -1,3 +1,4 @@
+import 'package:ai_lawyer/src/presentations/cart/view/cards_view/cards_view.dart';
 import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -15,8 +16,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 0;
 
   List<Widget> views = [
+
     HomeView(),
-    Welcome(),
+ 
+ 
+    CardsView(),
+
     Welcome(),
     Welcome(),
   ];
