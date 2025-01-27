@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:ai_lawyer/src/app/app.dart';
-import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/all_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -14,7 +12,6 @@ void main() async {
   await CardStorage.saveSampleCardsToPrefs();
   runApp(App());
 }
-
 
 class CardStorage {
   // This key is where we store the list of card JSON strings in SharedPreferences
