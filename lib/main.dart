@@ -11,20 +11,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
   await CardStorage.saveSampleCardsToPrefs();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ChatGPT Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const ChatScreen(),
-    );
-  }
+  runApp(App());
 }
 
 class CardStorage {
