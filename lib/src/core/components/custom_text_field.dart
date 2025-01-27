@@ -42,7 +42,6 @@ class CustomTextField extends StatelessWidget {
               focusNode: focusNode,
               controller: controller ?? contr,
               obscureText: obscureText,
-              keyboardType: TextInputType.phone,
               inputFormatters: inputFormatters,
               style: TextStyle(color: Colors.grey[200], fontSize: 16.sp),
               decoration: InputDecoration(
