@@ -6,9 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Example CardInfo model
-
-/// Main AddCard screen
 class AddCard extends StatefulWidget {
   const AddCard({super.key});
 
