@@ -2,13 +2,28 @@ import 'package:ai_lawyer/src/core/components/components.dart';
 import 'package:ai_lawyer/src/presentations/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:pinput/pinput.dart'; // Add this package for PIN input functionality
+import 'package:pinput/pinput.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Add this package for PIN input functionality
 
-class PhoneVirifyView extends StatelessWidget {
+class PhoneVirifyView extends StatefulWidget {
   const PhoneVirifyView(
       {super.key, required this.phoneNumber, required this.isResetPhoneVerify});
   final String phoneNumber;
   final bool isResetPhoneVerify;
+
+  @override
+  State<PhoneVirifyView> createState() => _PhoneVirifyViewState();
+}
+
+class _PhoneVirifyViewState extends State<PhoneVirifyView> {
+  Future<void> _saveAndNavigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isSaved', true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const CustomBottomNavBar()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +80,7 @@ class PhoneVirifyView extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
                   Text(
-                    phoneNumber,
+                    widget.phoneNumber,
                     style: TextStyle(
                       color: const Color(0xFFACADB9),
                       fontSize: 15.sp,
@@ -114,12 +129,8 @@ class PhoneVirifyView extends StatelessWidget {
                   CustomButtom(
                     title: 'Проверка',
                     onTap: () {
-                      if (isResetPhoneVerify == false) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustomBottomNavBar(),
-                            ));
+                      if (widget.isResetPhoneVerify == false) {
+                        _saveAndNavigate();
                       } else {
                         Navigator.push(
                             context,

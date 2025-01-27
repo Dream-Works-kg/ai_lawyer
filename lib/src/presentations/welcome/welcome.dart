@@ -1,6 +1,5 @@
 import 'package:ai_lawyer/src/core/components/components.dart';
 import 'package:ai_lawyer/src/presentations/auth/auth.dart';
-import 'package:ai_lawyer/src/presentations/auth/view/sign_up/sing_up_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
