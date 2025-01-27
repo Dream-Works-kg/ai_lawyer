@@ -3,9 +3,24 @@ import 'package:ai_lawyer/src/presentations/auth/auth.dart';
 import 'package:ai_lawyer/src/presentations/auth/view/forgot_pasword/views/forgot_pasword_view.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  Future<void> _saveAndNavigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isSaved', true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const CustomBottomNavBar()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +90,7 @@ class LoginView extends StatelessWidget {
                 SizedBox(height: 2.h),
                 CustomButtom(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CustomBottomNavBar(),
-                      ),
-                    );
+                    _saveAndNavigate();
                   },
                   title: 'Войти',
                 ),

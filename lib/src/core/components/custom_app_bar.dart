@@ -48,30 +48,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               TextStyle(
                 fontSize: 17.sp,
                 fontWeight: FontWeight.w800,
-                color: Colors.black,
+                color: Colors.white,
               ),
         ),
       ),
       actions: [
         showTrailingButton
-            ? Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.sp),
-                child: GestureDetector(
-                  onTap: onTapTrailing,
-                  child: Container(
-                    height: 5.2.h,
-                    width: 11.5.w,
-                    decoration: BoxDecoration(
-                      color: const Color(0x2D4C4DDC),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    // child: Center(
-                    //   child: SvgPicture.asset(
-                    //     'assets/svg/ooo.svg',
-                    //     height: 2.5.h,
-                    //   ),
-                    // ),
-                  ),
+            ? GestureDetector(
+                onTap: onTapTrailing,
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 30.sp,
+                  color: Colors.white,
                 ),
               )
             : SizedBox(width: 11.5.w),

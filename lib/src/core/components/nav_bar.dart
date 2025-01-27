@@ -1,6 +1,9 @@
 import 'package:ai_lawyer/src/presentations/cart/view/cards_view/cards_view.dart';
 import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
+import '../../presentations/home/home.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -13,8 +16,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   int _currentIndex = 0;
 
   List<Widget> views = [
-    Welcome(),
+
+    HomeView(),
+ 
+ 
     CardsView(),
+
     Welcome(),
     Welcome(),
   ];
@@ -47,21 +54,33 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           unselectedItemColor: const Color(0xFFACADB9),
           currentIndex: _currentIndex,
           onTap: _onItemTapped,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(
+                Icons.home,
+                size: 23.sp,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.apps),
+              icon: Icon(
+                Icons.apps,
+                size: 23.sp,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.access_time),
+              icon: Icon(
+                Icons.access_time,
+                size: 23.sp,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+                size: 23.sp,
+              ),
               label: '',
             ),
           ],

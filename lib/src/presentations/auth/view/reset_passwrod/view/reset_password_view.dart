@@ -1,9 +1,24 @@
 import 'package:ai_lawyer/src/core/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ResetPasswordView extends StatelessWidget {
+class ResetPasswordView extends StatefulWidget {
   const ResetPasswordView({super.key});
+
+  @override
+  State<ResetPasswordView> createState() => _ResetPasswordViewState();
+}
+
+class _ResetPasswordViewState extends State<ResetPasswordView> {
+  Future<void> _saveAndNavigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isSaved', true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const CustomBottomNavBar()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +63,7 @@ class ResetPasswordView extends StatelessWidget {
             CustomButtom(
                 title: 'Сохранить',
                 onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CustomBottomNavBar(),
-                    ),
-                  );
+                  _saveAndNavigate();
                 })
           ],
         ),
