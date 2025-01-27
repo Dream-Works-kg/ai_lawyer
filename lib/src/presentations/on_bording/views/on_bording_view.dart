@@ -1,5 +1,4 @@
 import 'package:ai_lawyer/src/core/core.dart';
-import 'package:ai_lawyer/src/presentations/auth/auth.dart';
 import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

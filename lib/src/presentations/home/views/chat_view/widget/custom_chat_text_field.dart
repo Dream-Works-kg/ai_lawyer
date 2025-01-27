@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class CustomTextField extends StatelessWidget {
-  final IconData icon;
+class CustomChatTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final FocusNode? focusNode;
   final IconData? suffixIcon;
+  final Function()? prefixIcononTap;
   final Widget? prefixIcon;
   final TextEditingController? controller;
-  final List<TextInputFormatter>? inputFormatters;
 
-  const CustomTextField({
+  const CustomChatTextField({
     super.key,
-    required this.icon,
     required this.hintText,
     this.obscureText = false,
     this.suffixIcon,
     this.controller,
     this.focusNode,
-    this.inputFormatters,
     this.prefixIcon,
+    this.prefixIcononTap,
   });
 
   @override
@@ -35,14 +32,12 @@ class CustomTextField extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.grey[400]),
-          SizedBox(width: 3.w),
           Expanded(
             child: TextField(
               focusNode: focusNode,
               controller: controller ?? contr,
               obscureText: obscureText,
-              inputFormatters: inputFormatters,
+              keyboardType: TextInputType.name,
               style: TextStyle(color: Colors.grey[200], fontSize: 16.sp),
               decoration: InputDecoration(
                 hintText: hintText,
@@ -55,7 +50,10 @@ class CustomTextField extends StatelessWidget {
               ),
             ),
           ),
-          if (suffixIcon != null) Icon(suffixIcon, color: Colors.grey[400]),
+          if (suffixIcon != null)
+            GestureDetector(
+                onTap: prefixIcononTap,
+                child: Icon(suffixIcon, color: Colors.grey[400])),
         ],
       ),
     );
