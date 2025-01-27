@@ -1,4 +1,6 @@
 import 'package:ai_lawyer/src/presentations/cart/view/home_cart/home_cart.dart';
+import 'package:ai_lawyer/src/presentations/equal_law/view/main_law/main_law.dart';
+import 'package:ai_lawyer/src/presentations/profile/view/profile_user/view/profile_user.dart';
 import 'package:ai_lawyer/src/presentations/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +17,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   List<Widget> views = [
     Welcome(),
     HomeCart(),
-    Welcome(),
-    Welcome(),
+    MainLaw(),
+    ProfileUser(),
   ];
 
   void _onItemTapped(int index) {
@@ -57,7 +59,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.access_time),
+              icon: Icon(Icons.unfold_more),
               label: '',
             ),
             BottomNavigationBarItem(
