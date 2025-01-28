@@ -45,4 +45,6 @@ class OpenAIService {
       return 'Ошибка: $error';
     }
   }
+
+  static generateComparisonResponse(String message1, String message2) {}
 }
