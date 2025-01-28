@@ -52,6 +52,15 @@
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>tel</string>
+			<string>mailto</string>
+			<string>https</string>
+			<string>http</string>
+			<string>sms</string>
+			<string>whatsapp</string>
 		</array>
+
+		<!-- Добавлено для Web Share API -->
+		<key>NSHumanReadableDescription</key>
+		<string>Это приложение поддерживает функции \"Поделиться\" для совместного использования данных с другими приложениями.</string>
 	</dict>
 </plist>

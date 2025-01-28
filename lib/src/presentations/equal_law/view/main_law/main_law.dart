@@ -1,118 +1,117 @@
-// lib/src/screens/main_law.dart
-import 'package:ai_lawyer/src/core/core.dart'; // Убедитесь, что путь правильный
-import 'package:ai_lawyer/src/service/open_aI_service.dart';
+import 'package:ai_lawyer/src/core/core.dart';
+import 'package:ai_lawyer/src/presentations/equal_law/view/constitution/constitution_kyrgyzstan.dart';
+import 'package:ai_lawyer/src/presentations/equal_law/view/reply_from_gpt/reply_from_gpt.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class MainLaw extends StatefulWidget {
+class MainLaw extends StatelessWidget {
   const MainLaw({super.key});
-
-  @override
-  State<MainLaw> createState() => _MainLawState();
-}
-class _MainLawState extends State<MainLaw> {
-  final TextEditingController _controller1 = TextEditingController();
-  final TextEditingController _controller2 = TextEditingController();
-  bool _isGenerating = false;
-  String? _response; // Поле для отображения ответа
-
-  Future<void> _sendMessages() async {
-    final message1 = _controller1.text.trim();
-    final message2 = _controller2.text.trim();
-
-    if (message1.isEmpty || message2.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Пожалуйста, заполните оба поля.')),
-      );
-      return;
-    }
-
-    setState(() {
-      _isGenerating = true;
-    });
-
-    try {
-      final result =
-          await OpenAIService.generateComparisonResponse(message1, message2);
-
-      setState(() {
-        _response = result; // Сохраняем результат для отображения
-      });
-
-      // Очистка полей ввода
-      _controller1.clear();
-      _controller2.clear();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ошибка: $e')),
-      );
-    } finally {
-      setState(() {
-        _isGenerating = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 20.sp),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 10.h,
-            ),
-            // Первое поле ввода сообщения
-            TextField(
-              controller: _controller1,
-              decoration: const InputDecoration(
-                labelText: 'Введите первое сообщение',
-                border: OutlineInputBorder(),
+            SizedBox(height: 9.h),
+            Text(
+              "Сравнивай законодательство",
+              style: TextStyle(
+                fontSize: 19.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
-              minLines: 1,
-              maxLines: 5,
             ),
-            const SizedBox(height: 16),
-            // Второе поле ввода сообщения
-            TextField(
-              controller: _controller2,
-              decoration: const InputDecoration(
-                labelText: 'Введите второе сообщение',
-                border: OutlineInputBorder(),
-              ),
-              minLines: 1,
-              maxLines: 5,
-            ),
-            const SizedBox(height: 16),
-            // Кнопка отправки
-            ElevatedButton(
-              onPressed:   _sendMessages,
-              child: _isGenerating
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
+            SizedBox(height: 8.h),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReplyFromGpt(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 15.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xff141718),
+                  border: Border.all(color: Colors.white, width: 2.sp),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 1.sp),
+                    Text(
+                      "LawGuide.Bot",
+                      style: TextStyle(
+                        fontSize: 18.sp,
                         color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
-                    )
-                  : const Text('Сравнить'),
-            ),
-            const SizedBox(height: 16),
-            // Отображение ответа
-            if (_response != null)
-              Text(
-                'Ответ: $_response',
-                style: const TextStyle(fontSize: 16),
+                    ),
+                    Lottie.asset("assets/lottie/4.json"),
+                  ],
+                ),
               ),
+            ),
+            SizedBox(height: 1.5.h),
+            Text(
+              "Бот, который сравнивает законы и помогает вам разобраться в них",
+              style: TextStyle(
+                fontSize: 15.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ConstitutionKyrgyzstan(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 15.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xff141718),
+                  border: Border.all(color: Colors.white, width: 2.sp),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 1.sp),
+                    Text(
+                      "Конституция.kg",
+                      style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    Lottie.asset("assets/lottie/6.json"),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 1.5.h),
+            Text(
+              "Конституция Кыргызстана — основной закон, определяющий права граждан и устройство государства",
+              style: TextStyle(
+                fontSize: 15.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
       ),
