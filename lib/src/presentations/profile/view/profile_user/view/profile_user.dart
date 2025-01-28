@@ -1,3 +1,4 @@
+import 'package:ai_lawyer/src/core/core.dart';
 import 'package:ai_lawyer/src/presentations/profile/view/customer_support/customer_support.dart';
 import 'package:ai_lawyer/src/presentations/profile/view/settings_profile/views/preference/preference.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _ProfileUserState extends State<ProfileUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.sp),
         child: Column(

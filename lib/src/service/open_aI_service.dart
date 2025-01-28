@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class OpenAIService {
@@ -32,11 +33,15 @@ class OpenAIService {
             decodedBody['choices'][0]['message']['content'] as String;
         return content.trim();
       } else {
-        print('Ошибка: ${response.statusCode} ${response.body}');
+        if (kDebugMode) {
+          print('Ошибка: ${response.statusCode} ${response.body}');
+        }
         return 'Ошибка: ${response.body}';
       }
     } catch (error) {
-      print('Ошибка при вызове OpenAI API: $error');
+      if (kDebugMode) {
+        print('Ошибка при вызове OpenAI API: $error');
+      }
       return 'Ошибка: $error';
     }
   }
