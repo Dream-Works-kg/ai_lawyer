@@ -1,3 +1,4 @@
+import 'package:ai_lawyer/src/models/card_info_models.dart';
 import 'package:ai_lawyer/src/presentations/cart/view/add_card/add_card.dart';
 import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/all_cards.dart';
 import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/transaction_history.dart';
@@ -5,8 +6,58 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class CardsView extends StatelessWidget {
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class CardsView extends StatefulWidget {
   const CardsView({super.key});
+
+  @override
+  State<CardsView> createState() => _CardsViewState();
+}
+
+class _CardsViewState extends State<CardsView> {
+  List<CardModel> savedCards = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCards();
+    _saveCardsToCache();
+  }
+
+  Future<void> _loadCards() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cardsJson = prefs.getString('saved_cards');
+    if (cardsJson != null) {
+      final List<dynamic> cardsList = jsonDecode(cardsJson);
+      setState(() {
+        savedCards = cardsList.map((card) => CardModel.fromMap(card)).toList();
+      });
+    }
+  }
+
+  Future<void> _saveCardsToCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cardsJson = savedCards.map((card) => card.toMap()).toList();
+    await prefs.setString('saved_cards', jsonEncode(cardsJson));
+  }
+
+  Future<void> _navigateToAddCard() async {
+    // Переходим на экран добавления карты и ожидаем результата
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCard(
+          savedCards: savedCards,
+        ),
+      ),
+    );
+
+    if (result == true) {
+      await _loadCards();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +129,7 @@ class CardsView extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddCard(),
-                          ),
-                        );
+                        _navigateToAddCard();
                       },
                       child: DottedBorder(
                         color: Colors.grey,
@@ -105,7 +151,9 @@ class CardsView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 5.5.w),
-                    AllCards(),
+                    AllCards(
+                      savedCards: savedCards,
+                    ),
                   ],
                 ),
               ),

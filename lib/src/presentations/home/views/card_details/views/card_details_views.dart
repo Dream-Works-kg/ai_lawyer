@@ -1,4 +1,5 @@
 import 'package:ai_lawyer/src/core/core.dart';
+import 'package:ai_lawyer/src/presentations/cart/view/cards_view/view/all_cards.dart';
 import 'package:ai_lawyer/src/presentations/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -56,6 +57,8 @@ class _CardDetailsViewsState extends State<CardDetailsViews> {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            SizedBox(height: 3.6.h),
+            // AllCards(),
             SizedBox(height: 3.6.h),
             Text(
               'Транзакции',

@@ -1,13 +1,17 @@
 import 'dart:convert';
 
+import 'package:ai_lawyer/src/core/core.dart';
 import 'package:ai_lawyer/src/models/card_info_models.dart';
-import 'package:ai_lawyer/src/presentations/cart/view/add_card/widgets/card_form_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'widgets/widegt.dart';
+
 class AddCard extends StatefulWidget {
-  const AddCard({super.key});
+  final List<CardModel> savedCards;
+  const AddCard({super.key, required this.savedCards});
 
   @override
   State<AddCard> createState() => _AddCardState();
@@ -18,142 +22,317 @@ class _AddCardState extends State<AddCard> {
   final TextEditingController _cvcController = TextEditingController();
   final TextEditingController _cardHolderController = TextEditingController();
 
-  // Ensure these are in the dropdown items
-  String _selectedMonth = '01';
-  String _selectedYear = '23'; // We'll generate '23' in the dropdown items
-  bool _isDefault = false;
+  String? selectedMonth;
+  String? selectedYear;
 
-  String _cardLogo = 'assets/images/card.png';
-  String _cardBrandName = 'Новая карта';
-  String _displayCardNumber = '';
+  bool isDefaultCard = false;
 
-  /// Example logic for updating card logo based on first digits
-  void _updateCardLogo(String input) {
-    _displayCardNumber = input;
-    final cleanInput = input.replaceAll(' ', '');
-    if (cleanInput.startsWith('56')) {
-      _cardLogo = 'assets/images/peymont.png';
-      _cardBrandName = 'Mastercard';
-    } else if (cleanInput.startsWith('40')) {
-      _cardLogo = 'assets/images/visa1.png';
-      _cardBrandName = 'Visa';
+  String cardNumber = '';
+  String cardHolderName = '';
+  String cardLogo = 'assets/images/peymont.png';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _cardNumberController.addListener(() {
+      setState(() {
+        cardNumber = _cardNumberController.text;
+        cardLogo = _getCardLogo(cardNumber);
+      });
+    });
+
+    _cardHolderController.addListener(() {
+      setState(() {
+        cardHolderName = _cardHolderController.text;
+      });
+    });
+  }
+
+  void _saveCardToCache(List<CardModel> cards) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cardsJson = cards.map((card) => card.toMap()).toList();
+    await prefs.setString('saved_cards', jsonEncode(cardsJson));
+  }
+
+  void _saveCard() {
+    if (_cardNumberController.text.isEmpty ||
+        _cardHolderController.text.isEmpty ||
+        selectedMonth == null ||
+        selectedYear == null ||
+        _cvcController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Пожалуйста, заполните все поля")),
+      );
+      return;
+    }
+
+    final newCard = CardModel(
+      cardNumber: _cardNumberController.text,
+      cardHolderName: _cardHolderController.text,
+      expiryMonth: selectedMonth!,
+      expiryYear: selectedYear!,
+      cvc: _cvcController.text,
+      isDefault: isDefaultCard,
+      cardLogo: cardLogo,
+    );
+
+    setState(() {
+      widget.savedCards.add(newCard);
+      _saveCardToCache(widget.savedCards);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Карта успешно сохранена!")),
+    );
+
+    Navigator.pop(context, true);
+  }
+
+  @override
+  void dispose() {
+    _cardNumberController.dispose();
+    _cvcController.dispose();
+    _cardHolderController.dispose();
+    super.dispose();
+  }
+
+  String _getCardLogo(String cardNumber) {
+    if (cardNumber.startsWith('56')) {
+      return 'assets/images/peymont.png';
+    } else if (cardNumber.startsWith('41')) {
+      return 'assets/images/visa1.png';
     } else {
-      _cardLogo = 'assets/images/card.png';
-      _cardBrandName = 'Новая карта';
+      return 'assets/images/peymont.png';
     }
   }
 
-  /// Save card info to SharedPreferences
-  Future<void> saveCardInfo() async {
-    final prefs = await SharedPreferences.getInstance();
+  final List<DropdownMenuItem<String>> monthItems = List.generate(
+    12,
+    (index) => DropdownMenuItem(
+      value: (index + 1).toString().padLeft(2, '0'),
+      child: Text(
+        (index + 1).toString().padLeft(2, '0'),
+        style: TextStyle(color: Colors.white, fontSize: 16.sp),
+      ),
+    ),
+  );
 
-    final cardInfo = CardInfo(
-      cardNumber: _cardNumberController.text,
-      cardHolderName: _cardHolderController.text,
-      expiryMonth: _selectedMonth,
-      expiryYear: _selectedYear,
-      cvc: _cvcController.text,
-      isDefault: _isDefault,
-    );
+  final List<DropdownMenuItem<String>> yearItems = List.generate(
+    10,
+    (index) => DropdownMenuItem(
+      value: (DateTime.now().year + index).toString(),
+      child: Text(
+        (DateTime.now().year + index).toString(),
+        style: TextStyle(color: Colors.white, fontSize: 16.sp),
+      ),
+    ),
+  );
 
-    final cardInfoJson = jsonEncode(cardInfo.toJson());
-    await prefs.setString('card_info', cardInfoJson);
+  void onMonthChanged(String? value) {
+    setState(() {
+      selectedMonth = value;
+    });
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Card information saved successfully!')),
-    );
+  void onYearChanged(String? value) {
+    setState(() {
+      selectedYear = value;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text("Добавить карту"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: SafeArea(
+    return CustomScaffold(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6.0.w),
         child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 2.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Spacing
-                SizedBox(height: 2.h),
-
-                // The card form widget
-                CardFormWidget(
-                  cardNumberController: _cardNumberController,
-                  onCardNumberChanged: (value) {
-                    setState(() {
-                      _updateCardLogo(value);
-                    });
-                  },
-                  cvcController: _cvcController,
-                  cardHolderController: _cardHolderController,
-                  selectedMonth: _selectedMonth,
-                  selectedYear: _selectedYear,
-
-                  /// Because DropdownButton<String> expects `String? val`,
-                  /// we do a null-check before assigning
-                  onMonthChanged: (val) {
-                    if (val != null) {
-                      setState(() {
-                        _selectedMonth = val;
-                      });
-                    }
-                  },
-                  onYearChanged: (val) {
-                    if (val != null) {
-                      setState(() {
-                        _selectedYear = val;
-                      });
-                    }
-                  },
-                  isDefault: _isDefault,
-                  onDefaultChanged: (val) {
-                    setState(() {
-                      _isDefault = val;
-                    });
-                  },
-                  cardLogo: _cardLogo,
-                ),
-
-                SizedBox(height: 3.h),
-
-                // Save button
-                GestureDetector(
-                  onTap: saveCardInfo,
-                  child: Container(
-                    height: 8.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.blue,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomAppBar(
+                title: 'Добавить новую карту',
+                showArrowBackButton: true,
+              ),
+              SizedBox(height: 2.h),
+              CreditCardWidget(
+                cardLogo: cardLogo,
+                cardNumber: cardNumber,
+                cardHolderName: cardHolderName,
+              ),
+              SizedBox(height: 5.4.h),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Введите информацию',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21.sp,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
                     ),
-                    child: Center(
-                      child: Text(
-                        "Сохранить",
+                  ),
+                  SizedBox(height: 2.5.h),
+                  CustomTextFieldCard(
+                    label: 'Номер карты',
+                    controller: _cardNumberController,
+                    hintText: "•••• •••• •••• ••••",
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        cardLogo,
+                        height: 2.h,
+                      ),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(16),
+                      TextInputFormatter.withFunction(
+                        (oldValue, newValue) {
+                          final formattedText = _formatNumber(newValue.text);
+                          return TextEditingValue(
+                            text: formattedText,
+                            selection: TextSelection.collapsed(
+                              offset: formattedText.length,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.5.h),
+                  CustomTextFieldCard(
+                    label: 'Имя владельца',
+                    controller: _cardHolderController,
+                    hintText: "Имя владельца",
+                  ),
+                  SizedBox(height: 2.5.h),
+                  Text(
+                    "Дата окончания срока",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17.sp,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 1.5.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: _buildDropdownField(
+                          label: "Месяц",
+                          value: selectedMonth,
+                          items: monthItems,
+                          onChanged: onMonthChanged,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Expanded(
+                        flex: 2,
+                        child: _buildDropdownField(
+                          label: "Год",
+                          value: selectedYear,
+                          items: yearItems,
+                          onChanged: onYearChanged,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Expanded(
+                        flex: 2,
+                        child: CustomTextFieldCard(
+                          label: 'CVC',
+                          controller: _cvcController,
+                          hintText: "231",
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.5.h),
+                  Row(
+                    children: [
+                      Switch(
+                        value: isDefaultCard,
+                        onChanged: (value) {
+                          setState(() {
+                            isDefaultCard = value;
+                          });
+                        },
+                        activeColor: Colors.white,
+                        activeTrackColor: Colors.grey.shade700,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.grey.shade800,
+                      ),
+                      Text(
+                        'Отметить как карту по умолчанию',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17.sp,
+                          color: Colors.grey,
+                          fontSize: 15.sp,
+                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+                  SizedBox(height: 1.5.h),
+                  CustomButtom(title: 'Добавить новую карту', onTap: _saveCard),
+                  SizedBox(height: 1.5.h),
+                ],
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  String _formatNumber(String input) {
+    return input
+        .replaceAllMapped(
+          RegExp(r".{1,4}"),
+          (match) => '${match.group(0)} ',
+        )
+        .trim();
+  }
+
+  Widget _buildDropdownField({
+    required String label,
+    required String? value,
+    required List<DropdownMenuItem<String>> items,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(color: Colors.white, fontSize: 15.sp),
+        ),
+        SizedBox(height: 1.h),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 4.sp),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade800,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: DropdownButton<String>(
+            value: value,
+            onChanged: onChanged,
+            underline: const SizedBox(),
+            iconEnabledColor: Colors.white,
+            dropdownColor: Colors.grey.shade900,
+            isExpanded: true,
+            hint: Text(
+              label,
+              style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+            ),
+            items: items,
+          ),
+        ),
+      ],
     );
   }
 }

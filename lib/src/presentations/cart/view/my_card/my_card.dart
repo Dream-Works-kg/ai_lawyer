@@ -1,13 +1,15 @@
-import 'dart:convert'; // ДОБАВЛЕНО
-import 'package:shared_preferences/shared_preferences.dart'; // ДОБАВЛЕНО
-
+import 'dart:convert';
+import 'package:ai_lawyer/src/models/card_info_models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ai_lawyer/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class MyCard extends StatefulWidget {
-  const MyCard({super.key});
+  const MyCard({super.key, required this.cardModel, required this.onDelete});
+  final CardModel cardModel;
 
+  final Function(CardModel) onDelete;
   @override
   State<MyCard> createState() => _MyCardState();
 }
@@ -17,42 +19,10 @@ class _MyCardState extends State<MyCard> {
   bool _atmWithdraws = false;
   bool _international = false;
 
-  /// Метод для удаления именно этой карты из SharedPreferences,
-  /// чтобы она пропала и из экрана PaymontHone
-  Future<void> _removeCurrentCard() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Считываем существующие JSON-строки (список карт)
-    final List<String> existingCards = prefs.getStringList('my_cards') ?? [];
-
-    // Номер нашей "текущей" карты:
-    final String currentCardNumber = "5562 5566 5577 1987".replaceAll(' ', '');
-
-    // Создадим новый список, куда добавим все карты, кроме той, что хотим удалить
-    final List<String> updatedCards = [];
-
-    for (final cardJson in existingCards) {
-      final map = jsonDecode(cardJson) as Map<String, dynamic>;
-
-      final String? storedNumber = map['cardNumber']?.replaceAll(' ', '');
-
-      // Если это не наша карта — оставляем
-      if (storedNumber != currentCardNumber) {
-        updatedCards.add(cardJson);
-      }
-    }
-
-    // Сохраняем обновлённый список обратно
-    await prefs.setStringList('my_cards', updatedCards);
-
-    // Возвращаемся назад (к PaymontHone или любому другому экрану)
-    Navigator.pop(context);
-  }
-
-  /// Метод, который показывает bottom sheet c «Удалить карту»
   void _openBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.black, // или любой другой цвет
+      backgroundColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
@@ -63,7 +33,6 @@ class _MyCardState extends State<MyCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Можно добавить "ручку" вверху для эстетики
               SizedBox(height: 12),
               Container(
                 width: 50,
@@ -74,8 +43,6 @@ class _MyCardState extends State<MyCard> {
                 ),
               ),
               SizedBox(height: 16),
-
-              // Пункт "Удалить карту"
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),
                 title: Text(
@@ -83,8 +50,9 @@ class _MyCardState extends State<MyCard> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pop(context); // Сначала закрываем bottom sheet
-                  _removeCurrentCard(); // Потом удаляем карту
+                  widget.onDelete(widget.cardModel);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
               ),
               SizedBox(height: 16),
@@ -104,10 +72,6 @@ class _MyCardState extends State<MyCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 1.h),
-
-            /// ----------------------------------
-            ///  AppBar
-            /// ----------------------------------
             CustomAppBar(
               showArrowBackButton: true,
               title: 'Настройка карты',
@@ -118,16 +82,9 @@ class _MyCardState extends State<MyCard> {
                 fontWeight: FontWeight.w500,
                 height: 1.59,
               ),
-              // Отключаем кнопку в AppBar, чтобы
-              // удаление происходило только из bottom sheet
               showTrailingButton: false,
             ),
-
             SizedBox(height: 3.5.h),
-
-            /// ----------------------------------
-            ///  Заголовок "Моя карта" + иконка more_horiz
-            /// ----------------------------------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -141,7 +98,9 @@ class _MyCardState extends State<MyCard> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: _openBottomSheet, // Нажимаем - открываем bottom sheet
+                  onTap: () {
+                    _openBottomSheet();
+                  },
                   child: Icon(
                     Icons.more_horiz,
                     color: Colors.white,
@@ -151,8 +110,6 @@ class _MyCardState extends State<MyCard> {
               ],
             ),
             SizedBox(height: 2.h),
-
-            // ------------ Карточка ------------
             Container(
               width: double.infinity,
               height: 23.h,
@@ -175,7 +132,6 @@ class _MyCardState extends State<MyCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ------------ Верхняя плашка ------------
                     Container(
                       height: 7.5.h,
                       width: double.infinity,
@@ -191,16 +147,14 @@ class _MyCardState extends State<MyCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Иконка слева
                             Padding(
                               padding: EdgeInsets.only(top: 13.sp),
                               child: Image.asset("assets/images/card.png"),
                             ),
-                            // Номер карты справа
                             Padding(
                               padding: EdgeInsets.only(right: 8.sp),
                               child: Text(
-                                "5562 5566 5577 1987",
+                                widget.cardModel.cardNumber,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.sp,
@@ -214,15 +168,13 @@ class _MyCardState extends State<MyCard> {
                       ),
                     ),
                     SizedBox(height: 3.8.h),
-
-                    // ------------ Данные карты ------------
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.sp),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Mastercard",
+                            widget.cardModel.cardHolderName,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 17.sp,
@@ -245,7 +197,7 @@ class _MyCardState extends State<MyCard> {
                                   ),
                                 ),
                               ),
-                              Image.asset("assets/images/peymont.png"),
+                              Image.asset(widget.cardModel.cardLogo),
                             ],
                           ),
                         ],
@@ -255,7 +207,6 @@ class _MyCardState extends State<MyCard> {
                 ),
               ),
             ),
-
             SizedBox(height: 5.h),
             Text.rich(
               TextSpan(
@@ -278,8 +229,6 @@ class _MyCardState extends State<MyCard> {
               ),
             ),
             SizedBox(height: 4.h),
-
-            // ---------- Online Payment ----------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -306,8 +255,6 @@ class _MyCardState extends State<MyCard> {
               ],
             ),
             SizedBox(height: 2.h),
-
-            // ---------- ATM WithDraws ----------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -334,8 +281,6 @@ class _MyCardState extends State<MyCard> {
               ],
             ),
             SizedBox(height: 2.h),
-
-            // ---------- International ----------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
