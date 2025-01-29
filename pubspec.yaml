@@ -17,7 +17,6 @@ dependencies:
   pinput: ^5.0.1
   shared_preferences: ^2.4.0
   url_launcher: ^6.3.1
-
   dotted_border: ^2.1.0
   provider: ^6.1.2
   flutter_chat_types: ^3.6.2
@@ -26,6 +25,8 @@ dependencies:
   flutter_dotenv: ^5.2.1
   lottie: ^3.3.1
   share_plus: ^10.1.4
+  dio: ^5.7.0
+  file_picker: ^8.1.7
 
 dev_dependencies:
   flutter_test:
