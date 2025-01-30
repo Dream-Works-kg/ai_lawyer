@@ -31,9 +31,8 @@ class _InformationState extends State<Information> {
     await prefs.setString('userEmail', emailController.text.trim());
 
     // Переход на страницу профиля после сохранения
-    Navigator.pushReplacement(
+    Navigator.pop(
       context,
-      MaterialPageRoute(builder: (context) => const ProfileUser()),
     );
   }
 
