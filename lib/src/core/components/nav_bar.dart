@@ -66,7 +66,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.swap_vert),
+              icon: Icon(
+                Icons.swap_vert,
+                size: 23.sp,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
